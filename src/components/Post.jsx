@@ -9,9 +9,7 @@ import { useState } from 'react'
 
 export function Post({author, content, publishedAt}) {
 
-    const [comments, setComments] = useState([
-        'Post muito bacana, hein?!'
-    ])
+    const [comments, setComments] = useState([])
 
     const [newCommentText, setNewCommentText] = useState('')
 
@@ -22,10 +20,18 @@ export function Post({author, content, publishedAt}) {
         e.preventDefault()
         setComments([...comments, newCommentText])
         setNewCommentText('')
+        e.target.publishComment.blur()
     }
 
     function handleNewCommentChange(e) {
         setNewCommentText(e.target.value)
+    }
+
+    function deleteComment(commentToDelete) {
+        const commentsWithoutDeletedOne = comments.filter(comment => {
+            return comment !== commentToDelete
+        })
+        setComments(commentsWithoutDeletedOne)
     }
 
     return (
@@ -66,7 +72,7 @@ export function Post({author, content, publishedAt}) {
                 onChange={handleNewCommentChange}
                 />
                 <footer>
-                    <button type="submit">Publicar</button>
+                    <button name='publishComment' type="submit">Publicar</button>
                 </footer>
             </form>
             <div className={styles.commentList}>
@@ -74,7 +80,8 @@ export function Post({author, content, publishedAt}) {
                     return (
                         <Comment
                         key={comment} 
-                        content={comment} 
+                        content={comment}
+                        onDeleteComment={deleteComment}
                         />
                     )
                 })}
